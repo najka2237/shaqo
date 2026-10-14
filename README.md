@@ -43,8 +43,34 @@ cd server
 npm test
 ```
 
-## 6. Deploy (Vercel)
+## 6. New features (added after the thesis book)
+- Forgot / reset / change password (emailed link, valid 1 hour). Password rule: 8+ characters with letters and numbers
+- Email, SMS and WhatsApp notifications (each user chooses in **Account**); in-app notifications are always on
+- Withdraw an application; employers can **close / reopen** a job
+- Saved jobs (♡), job alerts, search by minimum salary, sorting, pagination
+- Interview scheduling (employer proposes, applicant accepts/declines) and messages between employer and applicant
+- Employer dashboard with statistics; richer admin statistics
+- Verified employers (✔) and featured jobs (★), set by the admin
+- Report a job (admin reviews under **Reports**)
+- Somali / English switch (top bar). Main pages are translated; add more text in `client/src/i18n.jsx`
+- Security: security headers, rate limit on login/register/forgot-password (failed attempts only)
+
+After updating, run `npm install` in `server` (adds `nodemailer`).
+
+### Email (optional)
+Fill `SMTP_*` in `server/.env` (any SMTP service: Gmail app password, Brevo, Mailgun...). Without it, nothing is emailed; the reset link is printed in the server terminal during development.
+
+### SMS / WhatsApp (optional)
+Needs a Twilio account (`TWILIO_*` in `.env`). Phone numbers must include the country code (+252...).
+
+### Not included
+- **Mobile money payments** (EVC Plus / eDahab) need a merchant agreement with the operator. Featured jobs are set manually by the admin for now.
+- **CV storage**: CVs are still stored inside MongoDB (fine for a demo; move to Cloudinary/S3 for heavy use).
+
+## 7. Deploy (Vercel)
 Client: Root Directory = `client`, `VITE_API_URL` = server URL + `/api`. Server: Vercel/Render with env vars MONGO_URI, JWT_SECRET, CLIENT_URL.
 
-## Haddii DNS error (`querySrv ETIMEOUT`) yimaado
-Gudaha `server/src/db.js` bilowga ku dar: `import dns from 'node:dns'; dns.setServers(['8.8.8.8','1.1.1.1']);`
+### Deploy the server on Render
+1. Push the project to GitHub (never commit `.env`).
+2. Render -> New -> Web Service -> root directory `server`, build `npm install`, start `npm start`.
+3. Environment: `MONGO_URI`, `JWT_SECRET`, `CLIENT_URL` (your Vercel address), `APP_URL` (same), `NODE_ENV=production`, plus optional `SMTP_*` / `TWILIO_*`.
